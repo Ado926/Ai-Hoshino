@@ -24,7 +24,7 @@ global.packname = ``
 global.author = '{\n "bot": {\n   "name": "Michi Ai Bot",\n     "author": "Wirk",\n   "status_bot": "active"\n }\n}'
 global.wait = '🐢 *Esᴘᴇʀᴇ ᴜɴ ᴍᴏᴍᴇɴᴛᴏ... ᴇʟ ᴍɪᴄʜɪ ʟᴏ ᴇsᴛᴀ ᴄᴀʀɢᴀɴᴅᴏ ฅ^•ﻌ•^ฅ*'
 global.botname = '✯ Michi Ai Bot - MD ✰'
-global.textbot = `Powered By Starlights Team`
+global.textbot = `☁️ Powered By Wirk ☁️`
 global.listo = '*Aquí ᴛɪᴇɴᴇs :ᴅ*'
 global.namechannel = '【 ✯ Vivos Vivientes - Oficial Chanel ✰ 】'
 
