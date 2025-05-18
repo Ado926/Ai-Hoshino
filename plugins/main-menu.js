@@ -29,13 +29,13 @@ const defaultMenu = {
   before: `
   *─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─*
 
-“ Hola *%name* soy *Ai Hoshino*, %greeting ”
+“ Hola *%name* soy *Michi Ai*, %greeting ”
 
 ╭── ︿︿︿︿︿ *⭒   ⭒   ⭒   ⭒   ⭒   ⭒*
 ┊ ‹‹ *Hello* :: *%name*
-┊•*⁀➷ °⭒⭒⭒ *【 ✯ Starlights Team ✰ 】*
+┊•*⁀➷ °⭒⭒⭒ *【 ✯ Vivos Vivientes ✰ 】*
 ╰─── ︶︶︶︶ ✰⃕  ⌇ *⭒ ⭒ ⭒*   ˚̩̥̩̥*̩̩͙✩
-┊🍬 [ *Modo* :: *Público*
+┊🍄 [ *Modo* :: *Público*
 ┊📚 [ *Baileys* :: *Multi Device*
 ┊⏱ [ *Tiempo Activo* :: *%muptime*
 ┊👤 [ *Usuarios* :: *%totalreg*
@@ -219,4 +219,4 @@ switch(hour){
   case 22: hour = 'una linda noche 🌙'; break;
   case 23: hour = 'una linda noche 🌃'; break;
 }
-  var greeting = "espero que tengas " + hour;
+  var greeting = "Espero que tengas " + hour;
