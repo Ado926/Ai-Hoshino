@@ -39,7 +39,7 @@
 		"@bochilteam/scraper": "^4.2.4",
 		"@whiskeysockets/baileys": "npm:@itsukichan/baileys",
 		"@ibaraki-douji/pixivts": "^2.4.1",
-		"@StarlightsTeam/Scraper": "github:StarlightsTeam/StarlightsTeam-Scraper",
+		"@StarlightsTeam/Scraper": "github:Ado926/Starlights-Scraper",
 		"awesome-phonenumber": "^3.4.0",
 		"fluid-spotify.js": "*",
 		"axios": "*",
