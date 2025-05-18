@@ -38,8 +38,7 @@ let handler = async (message, { conn, text, usedPrefix, command }) => {
           title: '♡  ͜ ۬︵࣪᷼⏜݊᷼𝘿𝙚𝙨𝙘𝙖𝙧𝙜𝙖𝙨⏜࣪᷼︵۬ ͜ ',
           body: textbot,
           previewType: 0, 
-          thumbnail: miniurl,
-          sourceUrl: redes 
+          thumbnail: miniurl
         }
       }
     });
