@@ -1,66 +1,73 @@
+import moment from 'moment-timezone';
+import PhoneNumber from 'awesome-phonenumber';
+import fetch from 'node-fetch';
 
-import { canLevelUp, xpRange } from '../lib/levelling.js'
-import { createHash } from 'crypto'
-import PhoneNumber from 'awesome-phonenumber'
-import fetch from 'node-fetch'
-import fs from 'fs'
+let handler = async (m, { conn, args }) => {
+    let userId;
+    if (m.quoted && m.quoted.sender) {
+        userId = m.quoted.sender;
+    } else {
+        userId = m.mentionedJid && m.mentionedJid[0] ? m.mentionedJid[0] : m.sender;
+    }
 
-let handler = async (m, { conn, usedPrefix, command}) => {
-  let who = m.mentionedJid && m.mentionedJid[0] ? m.mentionedJid[0] : m.fromMe ? conn.user.jid : m.sender
-  let bio = await conn.fetchStatus(who).catch(_ => 'undefined')
-  let biot = bio.status?.toString() || 'Sin Info'
-  let user = global.db.data.users[who]
-  let pp = await conn.profilePictureUrl(who, 'image').catch(_ => 'https://files.catbox.moe/1utp85.jpg')
-  let { exp, limit, name, registered, regTime, age, level } = global.db.data.users[who]
-  let { min, xp, max } = xpRange(user.level, global.multiplier)
-  let username = conn.getName(who)
-  let prem = global.prems.includes(who.split`@`[0])
-  let sn = createHash('md5').update(who).digest('hex')
-  let api = await axios.get(`https://deliriussapi-oficial.vercel.app/tools/country?text=${PhoneNumber('+' + who.replace('@s.whatsapp.net', '')).getNumber('international')}`)
-  let userNationalityData = api.data.result
-  let userNationality = userNationalityData ? `${userNationalityData.name} ${userNationalityData.emoji}` : 'Desconocido'
-  let img = await (await fetch(`${pp}`)).buffer()
-  let txt = ` –  *P E R F I L  -  U S E R*\n\n`
-      txt += `┌  ✩  *Nombre* : ${name}\n`
-      txt += `│  ✩  *Edad* : ${registered ? `${age} años` : '×'}\n`
-      txt += `│  ✩  *Numero* : ${PhoneNumber('+' + who.replace('@s.whatsapp.net', '')).getNumber('international')}\n`
-      txt += `│  ✩  *Nacionalidad* : ${userNationality}\n`
-      txt += `│  ✩  *Link* : wa.me/${who.split`@`[0]}\n`
-      txt += `│  ✩  *Estrellas* : ${limit}\n`
-      txt += `│  ✩  *Nivel* : ${level}\n`
-      txt += `│  ✩  *XP* : Total ${exp} (${user.exp - min}/${xp})\n`
-      txt += `│  ✩  *Premium* : ${prem ? 'Si' : 'No'}\n`
-      txt += `└  ✩  *Registrado* : ${registered ? 'Si': 'No'}`
-  let mentionedJid = [who]
-await conn.sendFile(m.chat, img, 'thumbnail.jpg', txt, m)
-}
-handler.help = ['perfil', 'perfil *@user*']
-handler.tags = ['rg']
-handler.command = /^(perfil|profile)$/i
-handler.register = true
+    let user = global.db.data.users[userId];
 
-export default handler
+    let name = conn.getName(userId);
+    let cumpleanos = user.birth || 'No especificado';
+    let genero = user.genre || 'No especificado';
+    let pareja = user.marry || 'Nadie';
+    let description = user.description || 'Sin Descripción';
+    let exp = user.exp || 0;
+    let nivel = user.level || 0;
+    let role = user.role || 'Sin Rango';
+    let coins = user.coin || 0;
+    let bankCoins = user.bank || 0;
 
+    let perfil = await conn.profilePictureUrl(userId, 'image').catch(_ => 'https://raw.githubusercontent.com/The-King-Destroy/Adiciones/main/Contenido/1745522645448.jpeg');
 
-const more = String.fromCharCode(8206)
-const readMore = more.repeat(4001)
+    let profileText = `
+✧･ﾟ: *Profile de* ◤ @${userId.split('@')[0]} ◢ *･ﾟ✧
 
-function formatDate(n, locale = 'es-US') {
-  let d = new Date(n)
-  return d.toLocaleDateString(locale, {
-    weekday: 'long',
-    day: 'numeric',
-    month: 'long',
-    year: 'numeric'
-  })
-}
+${description || 'No hay descripción por aquí...'}
 
-function formatHour(n, locale = 'en-US') {
-  let d = new Date(n)
-  return d.toLocaleString(locale, {
-    hour: 'numeric',
-    minute: 'numeric',
-    second: 'numeric',
-    hour12: true
-  })
-}
+┏━─━─━─━─━─━─━┓
+┃ ✦ Edad: ${user.age || 'Desconocida'}
+┃ ♛ Cumpleaños: ${cumpleanos || 'No especificado'}
+┃ ⚥ Género: ${genero || 'No definido'}
+┃ ♡ Casado con: ${pareja || 'Nadie'}
+┗━─━─━─━─━─━─━┛
+
+┏━━━★ Experiencia y Nivel ★━━━┓
+┃ ☆ Experiencia: ${exp.toLocaleString()}
+┃ ❖ Nivel: ${nivel}
+┃ ✎ Rango: ${role}
+┗━━━━━━━━━━━━━━━━┛
+
+┏━━━★ Economía ★━━━┓
+┃ ⛁ Coins Cartera: ${coins.toLocaleString()} ${moneda}
+┃ ⛃ Coins Banco: ${bankCoins.toLocaleString()} ${moneda}
+┃ ❁ Premium: ${user.premium ? '✅ Activado' : '❌ No activo'}
+┗━━━━━━━━━━━━━━┛
+`.trim();
+
+    await conn.sendMessage(m.chat, { 
+        text: profileText,
+        contextInfo: {
+            mentionedJid: [userId],
+            externalAdReply: {
+                title: '✧ Perfil de Usuario ✧',
+                body: dev,
+                thumbnailUrl: perfil,
+                mediaType: 1,
+                showAdAttribution: true,
+                renderLargerThumbnail: true
+            }
+        }
+    }, { quoted: m });
+};
+
+handler.help = ['profile'];
+handler.tags = ['rg'];
+handler.command = ['profile', 'perfil'];
+
+export default handler;
