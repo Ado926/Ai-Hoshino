@@ -6,21 +6,15 @@ const more = String.fromCharCode(8206)
 const readMore = more.repeat(4001)
 let txt = `*Hola!, te invito a unirte a los grupos oficiales de del Bot para convivir con la comunidad :D*
 
-1- 【 ✯ Starlights Team ✰ 】
-*✰* ${global.group}
-
-2- 【 ✯ Starlights Team ✰ 】- ll
-*✰* ${global.group2}
-
-3- 【 ✯ Starlights Team ✰ 】- lll
-*✰* ${global.group3}
+1- 【 ✯ Michi Ai  ✰ 】
+*✰* https://chat.whatsapp.com/LVswMhDLIzbAf4WliK6nau
 
 *─ׄ─ׅ─ׄ⭒─ׄ─ׅ─ׄ⭒─ׄ─ׅ─ׄ⭒─ׄ─ׅ─ׄ⭒─ׄ─ׅ─ׄ⭒─ׄ─ׅ─ׄ*
 
 ➠ Enlaces anulados? entre aquí! 
 
 Canal :
-*✰* ${global.canal}
+*✰* https://whatsapp.com/channel/0029Vb5UfTC4CrfeKSamhp1f
 
 > [ ✰ ] ${global.textbot}`
 await conn.sendFile(m.chat, img, "Thumbnail.jpg", txt, m, null, rcanal)
