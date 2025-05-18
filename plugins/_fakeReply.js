@@ -9,8 +9,8 @@ let img = await (await fetch(`https://tinyurl.com/2c5hk765`)).buffer()
       nombre: "【 ✯ Vivos Vivientes - Channel ✰ 】",
     },
     {
-      id: "120363352146629838@newsletter",
-      nombre: "✰ Let Go Vibes World ダーク",
+      id: "120363402846939411@newsletter",
+      nombre: "【 ✯ Vivos Vivientes - Channel ✰ 】",
     },
   ]
 
