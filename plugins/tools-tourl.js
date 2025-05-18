@@ -6,7 +6,7 @@ let handler = async (m) => {
   let q = m.quoted ? m.quoted : m
   let mime = (q.msg || q).mimetype || ''
   if (!mime) return conn.reply(m.chat, `${emoji} Por favor, responda a una *Imagen* o *Vídeo.*`, m)
-  await m.react(rwait)
+  await m.react("🕛")
   try {
   let media = await q.download()
   let isTele = /image\/(png|jpe?g|gif)|video\/mp4/.test(mime)
@@ -20,9 +20,9 @@ txt += `⏳ *Expira:* ${isTele ? 'No expira' : 'Desconocido'}\n\n`
 txt += `👤 *Generado por:* ${botname}`
 
 await conn.sendFile(m.chat, img, 'thumbnail.jpg', txt, m, fkontak)
-await m.react(done)
+await m.react("✅")
 } catch {
-await m.react(error)
+await m.react("😭")
 }}
 handler.help = ['tourl']
 handler.tags = ['transformador']
