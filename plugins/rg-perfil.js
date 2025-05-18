@@ -45,7 +45,7 @@ ${description || 'No hay descripción por aquí...'}
 
 ┏━━━★ Economía ★━━━┓
 ┃ ⛁ Coins Cartera: ${coins.toLocaleString()} coins
-┃ ⛃ Coins Banco: ${bankCoins.toLocaleString()} ${moneda}
+┃ ⛃ Coins Banco: ${bankCoins.toLocaleString()}  coins
 ┃ ❁ Premium: ${user.premium ? '✅ Activado' : '❌ No activo'}
 ┗━━━━━━━━━━━━━━┛
 `.trim();
