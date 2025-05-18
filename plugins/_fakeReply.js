@@ -5,8 +5,8 @@ let img = await (await fetch(`https://tinyurl.com/2c5hk765`)).buffer()
 
   const canales = [
     {
-      id: "120363191779210764@newsletter",
-      nombre: "【 ✯ Starlights Team - Oficial Chanel ✰ 】",
+      id: "120363402846939411@newsletter",
+      nombre: "【 ✯ Vivos Vivientes - Channel ✰ 】",
     },
     {
       id: "120363352146629838@newsletter",
