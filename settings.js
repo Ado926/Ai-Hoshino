@@ -9,7 +9,7 @@ import axios from 'axios'
 //*─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─*
 
 global.owner = [
-  ['639705083935', 'Irokz Dal ダーク', true],
+  ['50493732693', 'Wirk', true],
   ['50493732693', 'Hans', true]
 ]
 
@@ -21,12 +21,12 @@ global.prems = []
 //*─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─*
 
 global.packname = ``
-global.author = '{\n "bot": {\n   "name": "Ai Hoshino",\n     "author": "Irokz Dal ダーク",\n   "status_bot": "active"\n }\n}'
-global.wait = '🐢 *Aɢᴜᴀʀᴅᴇ ᴜɴ ᴍᴏᴍᴇɴᴛᴏ, sᴏʏ ʟᴇɴᴛᴀ... ฅ^•ﻌ•^ฅ*'
-global.botname = '✯ Ai Hoshino - MD ✰'
+global.author = '{\n "bot": {\n   "name": "Michi Ai Bot",\n     "author": "Wirk",\n   "status_bot": "active"\n }\n}'
+global.wait = '🐢 *Esᴘᴇʀᴇ ᴜɴ ᴍᴏᴍᴇɴᴛᴏ... ᴇʟ ᴍɪᴄʜɪ ʟᴏ ᴇsᴛᴀ ᴄᴀʀɢᴀɴᴅᴏ ฅ^•ﻌ•^ฅ*'
+global.botname = '✯ Michi Ai Bot - MD ✰'
 global.textbot = `Powered By Starlights Team`
-global.listo = '*Aqui tiene ฅ^•ﻌ•^ฅ*'
-global.namechannel = '【 ✯ Starlights Team - Oficial Chanel ✰ 】'
+global.listo = '*Aquí ᴛɪᴇɴᴇs :ᴅ*'
+global.namechannel = '【 ✯ Vivos Vivientes - Oficial Chanel ✰ 】'
 
 //*─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─*
 
