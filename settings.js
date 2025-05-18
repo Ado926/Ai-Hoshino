@@ -27,6 +27,7 @@ global.botname = '✯ Michi Ai Bot - MD ✰'
 global.textbot = `☁️ Powered By Wirk ☁️`
 global.listo = '*Aquí ᴛɪᴇɴᴇs :ᴅ*'
 global.namechannel = '【 ✯ Vivos Vivientes - Oficial Chanel ✰ 】'
+global.dev = '© Powered by Wirk'
 
 //*─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─⭒─ׄ─ׅ─ׄ─*
 
