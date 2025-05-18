@@ -63,13 +63,14 @@ let handler = async (m, { conn, usedPrefix, command, args, isOwner, isAdmin, isR
       break
 
     case 'antiprivado':
-    case 'antiprivate':
-      if (!isROwner) {
-        global.dfail('rowner', m, conn)
-        throw false
-      }
-      bot.antiPrivate = isEnable
-      break
+case 'antiprivate':
+  isAll = true // <- Esto lo hace global
+  if (!isROwner) {
+    global.dfail('rowner', m, conn)
+    throw false
+  }
+  bot.antiPrivate = isEnable
+  break
 
     default:
       if (!/[01]/.test(command)) return m.reply(`
