@@ -1,166 +1,74 @@
-import {
-  DisconnectReason,
-  useMultiFileAuthState,
-  MessageRetryMap,
-  fetchLatestBaileysVersion,
-  Browsers,
-  makeCacheableSignalKeyStore,
-  jidNormalizedUser,
-  PHONENUMBER_MCC
-} from '@whiskeysockets/baileys';
-
-import moment from 'moment-timezone';
-import NodeCache from 'node-cache';
-import readline from 'readline';
-import qrcode from "qrcode";
-import fs from "fs";
+import { makeWASocket, useMultiFileAuthState, makeCacheableSignalKeyStore, fetchLatestBaileysVersion, PHONENUMBER_MCC } from '@whiskeysockets/baileys';
 import pino from 'pino';
-import * as ws from 'ws';
-import { Boom } from '@hapi/boom';
-import { makeWASocket } from '../lib/simple.js';
+import { join } from 'path';
+import fs from 'fs';
 
-if (!(global.conns instanceof Array)) global.conns = [];
+const __dirname = process.cwd();
 
-let handler = async (m, { conn: star, args, usedPrefix, command }) => {
-  let parent = args[0] === 'plz' ? _conn : await global.conn;
-  if (!(args[0] === 'plz' || (await global.conn).user.jid === _conn.user.jid)) {
-    return m.reply(`Este comando solo puede ser usado en el bot principal! wa.me/${global.conn.user.jid.split`@`[0]}?text=${usedPrefix}code`);
+export async function handler(conn, m, { args, usedPrefix, command }) {
+  if (!args[0]) throw `*Ejemplo de uso:*\n\n${usedPrefix + command} 5219999999999`;
+
+  const cleanedNumber = args[0].replace(/[^0-9]/g, '');
+  if (!Object.keys(PHONENUMBER_MCC).some(v => cleanedNumber.startsWith(v))) {
+    throw `*El número debe tener el código del país, por ejemplo:* ${usedPrefix + command} 5219999999999`;
   }
 
-  async function serbot() {
-    let authFolderB = m.sender.split('@')[0];
+  const authFolderB = `${Date.now()}`;
+  const path = join(__dirname, 'serbot', authFolderB);
+  const { state, saveCreds } = await useMultiFileAuthState(path);
 
-    if (!fs.existsSync("./serbot/" + authFolderB)) {
-      fs.mkdirSync("./serbot/" + authFolderB, { recursive: true });
+  const { version } = await fetchLatestBaileysVersion();
+  const conn2 = makeWASocket({
+    version,
+    logger: pino({ level: 'silent' }),
+    printQRInTerminal: false,
+    browser: ['Ubuntu', 'Chrome', '20.0.04'],
+    auth: {
+      creds: state.creds,
+      keys: makeCacheableSignalKeyStore(state.keys, pino({ level: 'silent' }))
     }
+  });
 
-    if (args[0] && args[0] !== 'plz') {
-      fs.writeFileSync(`./serbot/${authFolderB}/creds.json`,
-        JSON.stringify(JSON.parse(Buffer.from(args[0], "base64").toString("utf-8")), null, '\t')
-      );
-    }
+  conn2.ev.on('creds.update', saveCreds);
 
-    const { state, saveCreds } = await useMultiFileAuthState(`./serbot/${authFolderB}`);
-    const msgRetryCounterCache = new NodeCache();
-    const { version } = await fetchLatestBaileysVersion();
+  conn.reply(m.chat, '⏳ Iniciando sesión, espera un momento...', m);
 
-    const connectionOptions = {
-      logger: pino({ level: 'silent' }),
-      printQRInTerminal: false,
-      browser: ["Ubuntu", "Chrome", "20.0.04"],
-      auth: {
-        creds: state.creds,
-        keys: makeCacheableSignalKeyStore(state.keys, pino({ level: "fatal" }).child({ level: "fatal" })),
-      },
-      msgRetryCounterCache,
-      generateHighQualityLinkPreview: true,
-      markOnlineOnConnect: true,
-      getMessage: async (key) => {
-        let jid = jidNormalizedUser(key.remoteJid);
-        let msg = await store.loadMessage(jid, key.id);
-        return msg?.message || "";
-      },
-      version
-    };
-
-    let conn = makeWASocket(connectionOptions);
-    conn.isInit = false;
-    let isInit = true;
-
-    async function connectionUpdate(update) {
-      const { connection, lastDisconnect, isNewLogin } = update;
-
-      if (isNewLogin) conn.isInit = true;
-
-      const code = lastDisconnect?.error?.output?.statusCode || lastDisconnect?.error?.output?.payload?.statusCode;
-      if (code && code !== DisconnectReason.loggedOut && !conn?.ws?.socket) {
-        let i = global.conns.indexOf(conn);
-        if (i >= 0) {
-          delete global.conns[i];
-          global.conns.splice(i, 1);
-        }
-        parent.sendMessage(m.chat, { text: "Conexión perdida..." }, { quoted: m });
-      }
-
-      if (connection === 'open') {
-        conn.isInit = true;
-        global.conns.push(conn);
-
-        await parent.reply(m.chat,
-          args[0]
-            ? '✅ Conectado correctamente con credenciales'
-            : '✅ Bot vinculado con éxito\n\nNota: esta conexión es temporal.\nSi el bot principal se reinicia, los sub bots también se desconectarán.',
-          m);
-
-        if (!args[0]) {
-          await parent.reply(conn.user.jid, 'En la próxima conexión usa este código para evitar usar QR:', m);
-          await parent.sendMessage(conn.user.jid, {
-            text: usedPrefix + command + " " +
-              Buffer.from(fs.readFileSync(`./serbot/${authFolderB}/creds.json`), "utf-8").toString("base64")
-          }, { quoted: m });
-        }
-      }
-    }
-
-    const timeoutId = setTimeout(() => {
-      if (!conn.user) {
-        try { conn.ws.close(); } catch { }
-        conn.ev.removeAllListeners();
-        let i = global.conns.indexOf(conn);
-        if (i >= 0) {
-          delete global.conns[i];
-          global.conns.splice(i, 1);
-        }
-        fs.rmSync(`./serbot/${authFolderB}`, { recursive: true, force: true });
-      }
-    }, 30000);
-
-    let handlerModule = await import('../handler.js');
-    let creloadHandler = async (restartConn) => {
-      try {
-        let fresh = await import(`../handler.js?update=${Date.now()}`).catch(console.error);
-        if (Object.keys(fresh || {}).length) handlerModule = fresh;
-      } catch (e) {
-        console.error(e);
-      }
-
-      if (restartConn) {
-        try { conn.ws.close(); } catch { }
-        conn.ev.removeAllListeners();
-        conn = makeWASocket(connectionOptions);
-        isInit = true;
-      }
-
-      if (!isInit) {
-        conn.ev.off('messages.upsert', conn.handler);
-        conn.ev.off('connection.update', conn.connectionUpdate);
-        conn.ev.off('creds.update', conn.credsUpdate);
-      }
-
-      conn.handler = handlerModule.handler.bind(conn);
-      conn.connectionUpdate = connectionUpdate.bind(conn);
-      conn.credsUpdate = saveCreds;
-
-      conn.ev.on('messages.upsert', conn.handler);
-      conn.ev.on('connection.update', conn.connectionUpdate);
-      conn.ev.on('creds.update', conn.credsUpdate);
-
-      isInit = false;
-      return true;
-    };
-    await creloadHandler(false);
+  try {
+    console.log('Solicitando código de emparejamiento...');
+    let codeBot = await conn2.requestPairingCode(cleanedNumber);
+    if (!codeBot) throw new Error('No se pudo obtener el código.');
+    await m.reply(`✅ Código generado exitosamente:\n\n*${codeBot}*\n\nEste código es válido por 1 minuto.`);
+  } catch (e) {
+    console.error('Error al generar código:', e);
+    return m.reply(`❌ Error al generar el código:\n${e.message}`);
   }
 
-  serbot();
-};
+  // Espera hasta que el usuario complete el emparejamiento o se agote el tiempo
+  const timeoutId = setTimeout(() => {
+    if (!conn2.user) {
+      try { conn2.ws.close(); } catch {}
+      conn2.ev.removeAllListeners();
+      fs.rmSync(`./serbot/${authFolderB}`, { recursive: true, force: true });
+      conn.reply(m.chat, '⏳ Tiempo agotado. No se completó la vinculación.');
+    }
+  }, 60000); // 60 segundos
 
-handler.help = ['code'];
-handler.tags = ['serbot'];
-handler.command = ['code', 'codebot'];
-handler.rowner = true;
+  conn2.ev.on('connection.update', async (update) => {
+    const { connection, lastDisconnect } = update;
 
-export default handler;
+    if (connection === 'open') {
+      clearTimeout(timeoutId);
+      global.conns.push(conn2);
+      conn.reply(m.chat, '✅ Bot vinculado correctamente.');
+    }
 
-function sleep(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
+    if (connection === 'close') {
+      let reason = lastDisconnect?.error?.output?.statusCode;
+      console.log('Conexión cerrada con código:', reason);
+    }
+  });
 }
+
+global.handler = handler;
+handler.command = ['jadibotcode', 'serbotcode', 'jadibotcodigo'];
+handler.rowner = true;
